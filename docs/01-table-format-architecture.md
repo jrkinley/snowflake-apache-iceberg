@@ -9,39 +9,40 @@ Apache Iceberg is an open table format designed for large-scale analytic dataset
 The spec defines this hierarchy from catalog to data:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  ICEBERG CATALOG                                                │
-│  Stores "current metadata pointer" for each table               │
-│  (Snowflake Horizon, Polaris, Unity Catalog, AWS Glue)          │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ points to
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  METADATA FILE (JSON)                                           │
-│  Contains: schemas, partition specs, current-snapshot-id,       │
-│  snapshot history, sort orders, table properties                │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ snapshot references
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  MANIFEST LIST (Avro)                                           │
-│  One per snapshot. Lists manifest files with partition summaries│
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ lists
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  MANIFEST FILES (Avro)                                          │
-│  Track data files with: path, partition values, column stats    │
-│  (min/max bounds, null counts, row counts)                      │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ track
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  DATA FILES (Parquet)                                           │
-│  Immutable columnar files in cloud object storage               │
-│  Note: Snowflake supports Parquet only; Iceberg spec also       │
-│  supports ORC and Avro                                          │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    ICEBERG CATALOG                      │
+│  • Stores "current metadata pointer" for each table     │
+│  • Snowflake Horizon, Polaris, Unity Catalog, AWS Glue  │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                  METADATA FILE (JSON)                   │
+│  • Schemas, partition specs, current-snapshot-id        │
+│  • Snapshot history, sort orders, table properties      │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                 MANIFEST LIST (Avro)                    │
+│  • One per snapshot                                     │
+│  • Lists manifest files with partition summaries        │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                  MANIFEST FILE (Avro)                   │
+│  • List of data file paths                              │
+│  • Per-file column statistics (min/max/nulls)           │
+│  • Partition values, row counts                         │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                   DATA FILES (Parquet)                  │
+│  • Immutable columnar files in cloud object storage     │
+│  • Snowflake supports Parquet only                      │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Spec Components Explained
