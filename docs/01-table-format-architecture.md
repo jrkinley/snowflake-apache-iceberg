@@ -193,10 +193,10 @@ CREATE OR REPLACE ICEBERG TABLE otel_traces (
     service_name        VARCHAR(256)  NOT NULL,
     service_namespace   VARCHAR(256),
     service_version     VARCHAR(64),
-    resource_attributes OBJECT,
-    span_attributes     OBJECT,
-    events              ARRAY,
-    links               ARRAY
+    resource_attributes VARIANT,
+    span_attributes     VARIANT,
+    events              VARIANT,
+    links               VARIANT
 )
 CATALOG         = 'SNOWFLAKE'
 EXTERNAL_VOLUME = 'otel_traces_vol'
